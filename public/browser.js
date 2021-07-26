@@ -1,27 +1,5 @@
 // e = envent
-document.addEventListener('click', function(e) {
-
-    // update feature
-    if(e.target.classList.contains('edit-me')) {
-        // prompt() 方法可用於顯示對話框讓使用者輸入資料
-        let originalText = e.target.parentElement.parentElement.querySelector('.item-text');
-        let userInput = prompt('請修改代辦事項', originalText.innerHTML);
-        let _id = e.target.getAttribute('data-id');
-        // 加入判斷式: 以免使用者按下Edit，之後沒有改變，直接按下取消，資料還是會被更改
-        if(userInput){
-            axios.post('/update-item', {
-                text: userInput,
-                id: _id
-            }).then(function() {
-                console.log(userInput);
-                originalText.innerHTML = userInput ;
-            }).catch(err => {
-                console.log(err);
-            })
-        } 
-    }
-
-
+document.addEventListener('click', function(e) { 
     // delete feature
     if(e.target.classList.contains('delete-me')) {
         let _id = e.target.getAttribute('data-id');
@@ -31,9 +9,45 @@ document.addEventListener('click', function(e) {
             }).then(function() {
                 e.target.parentElement.parentElement.remove();
                 console.log('已刪除');
-            }).catch(err => {
+            }).catch(err => {  
                 console.log(err);
             })
         }
+    }
+
+    // update feature ver.2 點擊文本(text)進入文本框(input)就可以修改內容
+    if(e.target.classList.contains('item-text')) {
+        let originText = e.target.innerHTML;
+        let _id = e.target.getAttribute('data-id');
+        e.target.innerHTML = '<input type="text" id="updateInput"></input>';
+        var updateInput = document.getElementById('updateInput');
+        // 點擊文本框，立刻獲得焦點
+        updateInput.focus();
+        updateInput.onblur = function () {
+            let updateVaule = updateInput.value;
+            if(updateVaule != "") {
+                axios.post('/update-item', {
+                    text: updateVaule,
+                    id: _id
+                }).then(function() {
+                    e.target.innerHTML = updateVaule;
+                }).catch(err => {
+                    console.log(err);
+                })
+            }else {
+                e.target.innerHTML = originText;
+            }
+        };
+    }
+
+    // 點擊checkbox 更改任務completed屬性真假值
+    if(e.target.classList.contains('completed-checkbox')) {
+        let _id = e.target.getAttribute('data-id');
+        let status = e.target.checked;
+        axios.post('/change-item-status', {
+            id: _id,
+            status: status
+        })
+        console.log(_id + ' 已更改為 '+ status);
     }
 })
