@@ -4,110 +4,102 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- CSS only -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- boxicons icon -->
+    <script src="https://unpkg.com/boxicons@2.0.9/dist/boxicons.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <title>Todos</title>
-    <style>
-        .container {
-            margin-top: 180px;
-        }
-        /* 相鄰兄弟選擇器 + */
-        .completed-checkbox:checked + span {
-            color: rgb(153, 153, 153);
-            text-decoration: line-through;
-        }
-    </style>
+    <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
     <div class="container">
-        <h1>Todos</h1>
+        <h1><span>My</span>Todos</h1>
         <form action="/create-item" method="POST">
-            <div class="d-flex align-items-center">
-                <input autofocus autocomplete="off" class="form-control mr-3" name='item' type="text" style="flex: 1;">
-                <button class="btn btn-primary">新增項目</button>
+            <div class="input-container">
+                <input  autocomplete="off" placeholder="輸入代辦事項..." name='item' id="input_create" type="text" style="flex: 1;">
+                <button class="btn">新增</button>
             </div>
         </form>
+
+        <!-- tab area -->
+        <nav>
+            <ul class="tab-container" id="tab">
+                <li class="active" id="all">all</li>
+                <li id="active">active</li>
+                <li id="complete">complete</li>
+            </ul>
+        </nav>
+        <!-- //tab area -->
+
         <!-- list area -->
-        <ul class="list-group pb-5" id="task-list" >
+        <ul class="taskList-container" id="task-list">
             <% for (list in todoList) { %>
-            <li class="list-group-item list-group-item-action d-flex align-items-center justify-content-between">
+            <li>
                 <% let checked = todoList[list].completed ? "checked" : " " %>
                 <input data-id="<%= list %>" class="completed-checkbox" type="checkbox" <%= checked %> />
                 <span data-id="<%= list %>" class="item-text">
                     <%= todoList[list].item %>
                 </span>
-                <div>
-                    <button data-id="<%= list %>"
-                        class="delete-me btn btn-danger ml-auto btn-sm">Delete</button>
-                </div>
+                <box-icon name='trash' data-id="<%= list %>" class="delete-me" type='solid' color='rgba(0,0,0,0.2)'></box-icon>
             </li>
             <% } %>
         </ul>
-        <div class="btn-group d-flex" role="group" aria-label="Basic radio toggle button group">
-            <input type="radio" class="btn-check" name="statusRadio" id="allRadio" autocomplete="off" onchange="handleTaskStat()" checked>
-            <label class="btn btn-outline-primary" for="allRadio">all</label>
-
-            <input type="radio" class="btn-check" name="statusRadio" id="activeRadio" autocomplete="off" onchange="handleTaskStat()">
-            <label class="btn btn-outline-primary" for="activeRadio">active</label>
-
-            <input type="radio" class="btn-check" name="statusRadio" id="completedRadio" autocomplete="off" onchange="handleTaskStat()">
-            <label class="btn btn-outline-primary" for="completedRadio">completed</label>
-
-            <button class="btn btn-outline-primary">clear</button>
-        </div>
-        <!-- //list area -->
+        <!-- //list area -->     
     </div>
         
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
-        
-        function handleTaskStat() {
-            let statusRadio = document.getElementsByName('statusRadio');
-            for(each in statusRadio) { 
-                // 取得屬性 checked 為 true 的 radio 的 id 的 字符串
-                // 把字符串 axios post 傳給 index.js 操作
-                if(statusRadio[each].checked){
-                    let radioId = statusRadio[each].getAttribute('id');
-                    let taskList = document.getElementById('task-list').children;
-                    // 顯示所有任務
-                    if(radioId == 'allRadio'){
-                        for (list in taskList) {
-                            console.log(taskList[list]);
-                            taskList[list].classList.add('d-block');
-                            taskList[list].classList.remove('d-none');
-                        }
+        // handle task bar 
+        let tab = document.getElementById('tab');
+        tab.addEventListener('click', handleTaskStat);
+        function handleTaskStat(e) {
+            console.log(e.target.getAttribute('id'));
+            let tab = document.getElementById('tab').children;
+            let taskList = document.getElementById('task-list').children;
+            // 把所有 tab 裡 li 元素移除 active 類別
+            for (each in tab) {
+                tab[each].className = "";
+            }
+            // 被點擊的元素添加 active 類別，和顯示相應的任務
+            // 顯示所有的任務
+            if(e.target.getAttribute('id') == 'all') {
+                e.target.classList.add('active');
+                for (list in taskList) {
+                    taskList[list].style.display = 'flex';
+                }
+            }
+            // 顯示完成的任務
+            if(e.target.getAttribute('id') == 'complete') {
+                e.target.classList.add('active');
+                for (list in taskList) {
+                    if(taskList[list].children[0].checked){
+                        taskList[list].style.display = 'flex';
+                    }else{
+                        taskList[list].style.display = 'none';
                     }
-                    //顯示未完成的任務
-                    if(radioId == 'activeRadio'){
-                        for (list in taskList) {
-                            if(taskList[list].children[0].checked){
-                                taskList[list].classList.add('d-none');
-                                taskList[list].classList.remove('d-block');
-                            }else{
-                                taskList[list].classList.add('d-block');
-                                taskList[list].classList.remove('d-none');
-                            }
-                        }
+                }
+            } 
+            // 顯示進行中任務
+            if(e.target.getAttribute('id') == 'active') {
+                e.target.classList.add('active');
+                for (list in taskList) {
+                    if(!taskList[list].children[0].checked){
+                        taskList[list].style.display = 'flex';
+                    }else{
+                        taskList[list].style.display = 'none';
                     }
-                    //顯示完成的任務
-                    if(radioId == 'completedRadio'){
-                        for (list in taskList) {
-                            if(!taskList[list].children[0].checked){
-                                taskList[list].classList.add('d-none');
-                                taskList[list].classList.remove('d-block');
-                            }else{
-                                taskList[list].classList.add('d-block');
-                                taskList[list].classList.remove('d-none');
-                            }
-                        }
-                    }
-                    
                 }
             }
         }
-
+        
+        // 如果新增項目的value不為空白，新增項目文本框就一直展開
+        let input_create = document.getElementById('input_create'); 
+        input_create.onblur = function () {
+            if(input_create.value != '') {
+                input_create.style.width = "80%";
+            }else {
+                input_create.style.width = "";
+            }
+        }
     </script>
     <script src="/browser.js"></script>
 </body>
