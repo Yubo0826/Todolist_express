@@ -1,19 +1,25 @@
 {
   "name": "todo_bynodejsexpress",
   "version": "1.0.0",
+  "engines": {
+    "node": "15.3.0"
+  },
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
   },
   "watch": "nodemon app",
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.21.1",
     "ejs": "^3.1.6",
     "ejs-locals": "^1.0.2",
     "express": "^4.17.1",
     "firebase": "^8.3.1",
+    "heroku": "^7.56.1",
     "nodemon": "^2.0.7"
   }
 }
