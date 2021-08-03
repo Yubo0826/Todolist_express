@@ -94,4 +94,4 @@ app.post('/delete-item', function(req, res) {
     dbref.remove();
 })
 
-app.listen(3000);
+app.listen(process.env.PORT || 3000);
