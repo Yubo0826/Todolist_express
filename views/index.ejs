@@ -7,13 +7,18 @@
     <!-- boxicons icon -->
     <script src="https://unpkg.com/boxicons@2.0.9/dist/boxicons.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <title>Todos</title>
+    <!-- 加載Google平台庫 -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <!-- 指定應用的客戶端ID -->
+    <meta name="google-signin-client_id" content="1001257604384-h4q4qkc8cbp6ggqsp4nhsjqmclnq302p.apps.googleusercontent.com">
+    <title>Todos | yubo</title>
     <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
     <div class="container">
         <h1><span>My</span>Todos</h1>
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
         <form action="/create-item" method="POST">
             <div class="input-container">
                 <input  autocomplete="off" placeholder="輸入代辦事項..." name='item' id="input_create" type="text" style="flex: 1;">
