@@ -5,8 +5,6 @@
     --main-color: #42455A;
     --second-color: #524C70;
     --completed-gray-color: #666666;
-
-
 }
 
 /* 統一 */
@@ -21,6 +19,16 @@ li {
     list-style-type: none;
 }
 
+/* RWD */
+@media screen and (max-width: 768px) {
+    .user-bar {
+        flex-wrap: wrap;
+    }
+    .login-container {
+        margin-top: 2rem;
+        margin-left: 1rem;
+    }
+}
 
 .container {
     display: flex;
@@ -47,10 +55,42 @@ li {
     font-weight: 100;
 }
 
+.user-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+}
+
+
+.login-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#userImg {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 20px;
+}
+
+#logout-container {
+    display: none;
+    flex-direction: row;
+    align-items: center;
+}
+
+.g-signout2 {
+    text-decoration: none;
+    color: var(--color-dark-white);
+}
+
 /* 輸入文本框+按鈕 */
 .input-container {
     width: 800px;
-    margin-bottom: 3rem;
 }
 
 .input-container input{

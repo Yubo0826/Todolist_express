@@ -9,22 +9,28 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <!-- 加載Google平台庫 -->
     <script src="https://apis.google.com/js/platform.js" async defer></script>
-    <!-- 指定應用的客戶端ID -->
+    <!-- 指定您的應用的客戶端ID -->
     <meta name="google-signin-client_id" content="1001257604384-h4q4qkc8cbp6ggqsp4nhsjqmclnq302p.apps.googleusercontent.com">
-    <title>Todos | yubo</title>
+    <title>My Todos</title>
     <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
     <div class="container">
         <h1><span>My</span>Todos</h1>
-        <div class="g-signin2" data-onsuccess="onSignIn"></div>
-        <form action="/create-item" method="POST">
+        <div class="user-bar">
             <div class="input-container">
                 <input  autocomplete="off" placeholder="輸入代辦事項..." name='item' id="input_create" type="text" style="flex: 1;">
-                <button class="btn">新增</button>
+                <button class="create-btn">新增</button>
             </div>
-        </form>
+            <div class="login-container">
+                <div class="g-signin2" data-onsuccess="onSignIn" onclick="changeUser=true;" id="loginBtn"></div>
+                <div id="logout-container">
+                    <img src="" id="userImg">
+                    <a href="#" class="g-signout2" onclick="signOut()">登出</a>    
+                </div>
+            </div>
+        </div>
 
         <!-- tab area -->
         <nav>
@@ -56,7 +62,7 @@
         // handle task bar 
         let tab = document.getElementById('tab');
         tab.addEventListener('click', handleTaskStat);
-        function handleTaskStat(e) {
+        function handleTaskStat(e) { 
             console.log(e.target.getAttribute('id'));
             let tab = document.getElementById('tab').children;
             let taskList = document.getElementById('task-list').children;
@@ -105,8 +111,54 @@
                 input_create.style.width = "";
             }
         }
+        
+        // Google 登入成功後
+        let userId = 'noLogin';
+        let changeUser = false;
+        function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            // 用戶成功登錄後，獲取用戶的 ID 令牌
+            var id_token = googleUser.getAuthResponse().id_token;
+            console.log(id_token);
+            // login btn 隱藏
+            var loginBtn = document.getElementById('loginBtn');
+            loginBtn.style.display = 'none';
+            // logout container 顯現
+            var logout_container = document.getElementById('logout-container');
+            logout_container.style.display = 'flex';
+            // 嵌入 使用者頭貼
+            var userImg = document.getElementById('userImg');
+            userImg.src = profile.getImageUrl();
+            // 得到使用者Google ID 並寫入cookie
+            userId = profile.getId();
+            docCookies.setItem("userId", userId);
+            // 使用者點擊登入按鈕 更改changeUser為真 為真的話刷新頁面
+            if(changeUser == true) {
+                location.reload();
+            }
+
+            console.log('ID: ' + userId); // Do not send to your backend! Use an ID token instead.
+            console.log('Name: ' + profile.getName());
+            console.log('Image URL: ' + profile.getImageUrl());
+            console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+        }
+
+        // Google 登出成功後
+        function signOut() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+                console.log('User signed out.');
+                // 使用者ID 改為未登入ID
+                userId = 'noLogin'
+                // 清除 cookie userId 的 value
+                docCookies.removeItem('userId');
+                // 刷新頁面
+                location.reload();
+            });
+        }
     </script>
     <script src="/browser.js"></script>
+    <script src="/docCookies.js"></script>
 </body>
 
 </html>
