@@ -20,6 +20,6 @@
 ![3](https://user-images.githubusercontent.com/43400890/149974218-286b2809-6a70-42af-80f3-6bf20b00143f.PNG)
 
 ### Demo
-初次點開，載入可能要等一點時間
+因為部屬到 heroku 免費空間，所以初次載入可能要等一點時間 :D
 
 https://yubo-todo.herokuapp.com/
