@@ -1,6 +1,11 @@
 # Todolist_express
 使用Node.js+Express.js實作Todolist
 
+### 技術
+1. 環境:採用 Node.js的 Express框架
+2. 模板引擎: EJS
+3. 資料庫: Firebase
+
 ### 功能
 - 新增
 - 刪除
